@@ -47,9 +47,10 @@ public class App {
     }
 
     private static void specialist() {
+        Call call;
         while (!endCalls) {
-            while (!calls.isEmpty()) {
-                System.out.println(calls.poll().getName() + " соединен с " +
+            while ((call = calls.poll()) != null) {
+                System.out.println(call.getName() + " соединен с " +
                         Thread.currentThread().getName());
                 try {
                     Thread.sleep(TIME_ANSWER);
