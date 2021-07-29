@@ -2,7 +2,7 @@ package ru.netology.task1;
 
 import java.util.Arrays;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Call center
@@ -14,7 +14,7 @@ public class App {
     private static final int NUMBER_OF_PERIODS = 2;
     private static final int TIME_ANSWER = 1_000;
     private static final int NUMBER_OF_SPECIALISTS = 5;
-    private static final Queue<Call> calls = new LinkedBlockingQueue<>();
+    private static final Queue<Call> calls = new ConcurrentLinkedQueue<>();
     private static volatile boolean endCalls;
 
 
