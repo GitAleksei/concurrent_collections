@@ -14,9 +14,23 @@ public class App {
 
     public static void main(String[] args) {
         array = getRandomArray(LENGTH_OF_ARRAY, BOUND);
+        System.out.println("Время в мс. заполнения ConcurrentHashMap = " +
+                timeProcessing(App::putToConcurrentMap));
+
+        System.out.println("Время в мс. чтения из ConcurrentHashMap = " +
+                timeProcessing(App::getFromConcurrentMap));
+
+        System.out.println("Время в мс. заполнения Collections.synchronizedMap = " +
+                timeProcessing(App::putToHashMap));
+
+        System.out.println("Время в мс. чтения из Collections.synchronizedMap = " +
+                timeProcessing(App::getFromHashMap));
+    }
+
+    private static long timeProcessing(Runnable runnable) {
         List<Thread> threadList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_THREAD; i++) {
-            threadList.add(new Thread(App::putToConcurrentMap));
+            threadList.add(new Thread(runnable));
         }
 
         long startTime = System.currentTimeMillis();
@@ -29,57 +43,8 @@ public class App {
             }
         });
         long finishTime = System.currentTimeMillis();
-        System.out.println("Время в мс. заполнения ConcurrentHashMap = " + (finishTime - startTime));
 
-        threadList = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_THREAD; i++) {
-            threadList.add(new Thread(App::getFromConcurrentMap));
-        }
-        startTime = System.currentTimeMillis();
-        threadList.forEach(Thread::start);
-        threadList.forEach(e -> {
-            try {
-                e.join();
-            } catch (InterruptedException ex) {
-                System.out.println(Arrays.toString(ex.getStackTrace()));
-            }
-        });
-        finishTime = System.currentTimeMillis();
-        System.out.println("Время в мс. чтения из ConcurrentHashMap = " + (finishTime - startTime));
-
-        threadList = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_THREAD; i++) {
-            threadList.add(new Thread(App::putToHashMap));
-        }
-        startTime = System.currentTimeMillis();
-        threadList.forEach(Thread::start);
-        threadList.forEach(e -> {
-            try {
-                e.join();
-            } catch (InterruptedException ex) {
-                System.out.println(Arrays.toString(ex.getStackTrace()));
-            }
-        });
-        finishTime = System.currentTimeMillis();
-        System.out.println("Время в мс. заполнения Collections.synchronizedMap = " +
-                (finishTime - startTime));
-
-        threadList = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_THREAD; i++) {
-            threadList.add(new Thread(App::getFromHashMap));
-        }
-        startTime = System.currentTimeMillis();
-        threadList.forEach(Thread::start);
-        threadList.forEach(e -> {
-            try {
-                e.join();
-            } catch (InterruptedException ex) {
-                System.out.println(Arrays.toString(ex.getStackTrace()));
-            }
-        });
-        finishTime = System.currentTimeMillis();
-        System.out.println("Время в мс. чтения из Collections.synchronizedMap = " +
-                (finishTime - startTime));
+        return finishTime - startTime;
     }
 
     private static void putToHashMap() {
